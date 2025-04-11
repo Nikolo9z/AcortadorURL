@@ -8,8 +8,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:80"
-    depends_on:
-      - db
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__MyDatabaseConnectionString=${MY_DATABASE_CONNECTION_STRING}
