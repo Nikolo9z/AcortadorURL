@@ -1,0 +1,16 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout del código
+      uses: actions/checkout@v3
+
+    - name: 🐳 Construir contenedores
+      run: docker compose build
