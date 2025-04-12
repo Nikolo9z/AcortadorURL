@@ -2,15 +2,18 @@ using AcortadorURL.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔧 Cargar configuración desde JSON si está disponible
+// Carga configuración desde archivos (opcional, para entorno local)
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
-// 🔐 Obtener cadena de conexión desde configuración o variable de entorno
-var connectionString = builder.Configuration.GetConnectionString("MyDatabaseConnectionString")
-                       ?? Environment.GetEnvironmentVariable("MY_DATABASE_CONNECTION_STRING");
+// Prioriza variable de entorno en producción, o usa config local en desarrollo
+var connectionString =
+    Environment.GetEnvironmentVariable("MY_DATABASE_CONNECTION_STRING") // Render
+    ?? builder.Configuration.GetConnectionString("MyDatabaseConnectionString"); // Local
+
 builder.Services.AddSingleton(connectionString);
+
 
 // ✅ Registrar servicios propios
 builder.Services.AddControllers();
@@ -46,7 +49,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapGet("/", () => "API funcionando desde Docker! v1");
-
+app.MapGet("/env", () =>
+{
+    var envConn = Environment.GetEnvironmentVariable("MY_DATABASE_CONNECTION_STRING");
+    return Results.Ok(new { connection = envConn });
+});
 app.Run();
 Console.WriteLine($"➡️  Entorno actual: {builder.Environment.EnvironmentName}");
 
