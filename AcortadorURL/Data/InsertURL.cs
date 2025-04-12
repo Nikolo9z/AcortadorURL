@@ -8,9 +8,9 @@ namespace AcortadorURL.Data
         private readonly string _connectionString;
 
         // Constructor que obtiene la cadena de conexión desde la configuración
-        public InsertURL(IConfiguration configuration)
+        public InsertURL(string connectionString)
         {
-            _connectionString = configuration.GetConnectionString("MyDatabaseConnectionString");
+            _connectionString = connectionString;
         }
 
         public ResponseInsertURL InsertarURL(RequestInsertURL url)

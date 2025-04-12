@@ -8,8 +8,9 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
 // 🔐 Obtener cadena de conexión desde configuración o variable de entorno
-var connectionString = builder.Configuration.GetConnectionString("MyDatabaseConnectionString") 
+var connectionString = builder.Configuration.GetConnectionString("MyDatabaseConnectionString")
                        ?? Environment.GetEnvironmentVariable("MY_DATABASE_CONNECTION_STRING");
+builder.Services.AddSingleton(connectionString);
 
 // ✅ Registrar servicios propios
 builder.Services.AddControllers();

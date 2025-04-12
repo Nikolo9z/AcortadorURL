@@ -7,9 +7,9 @@ namespace AcortadorURL.Data
     {
         private readonly string _connectionString;
 
-        public OriginalURL(IConfiguration configuration)
+        public OriginalURL(string connectionString)
         {
-            _connectionString = configuration.GetConnectionString("MyDatabaseConnectionString");
+            _connectionString = connectionString;
         }
 
         public OriginalUrlResponse GetUrlOriginal(OriginalUrlRequest request)
