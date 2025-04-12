@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build-and-test:
@@ -12,22 +12,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 📥 Checkout del código
-      uses: actions/checkout@v3
+      - name: 📥 Checkout del código
+        uses: actions/checkout@v3
 
-    - name: ⚙️ Configurar .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
+      - name: Cache de dependencias de .NET
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
-    - name: 📦 Restaurar dependencias
-      run: dotnet restore
+      - name: ⚙️ Configurar .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
 
-    - name: 🏗️ Compilar el proyecto
-      run: dotnet build --no-restore --configuration Release
+      - name: 📦 Restaurar dependencias
+        run: dotnet restore
 
-    - name: ✅ Ejecutar tests
-      run: dotnet test --configuration Release --verbosity normal
+      - name: 🏗️ Compilar el proyecto
+        run: dotnet build --no-restore --configuration Release
+
+      - name: ✅ Ejecutar tests
+        run: dotnet test --configuration Release --verbosity normal
 
   docker-build:
     name: 🐳 Docker Build
@@ -35,14 +43,14 @@ jobs:
     needs: build-and-test
 
     steps:
-    - name: 📥 Checkout del código
-      uses: actions/checkout@v3
+      - name: 📥 Checkout del código
+        uses: actions/checkout@v3
 
-    - name: 🐳 Construir contenedores
-      env:
-        ASPNETCORE_ENVIRONMENT: ${{ secrets.ASPNETCORE_ENVIRONMENT }}
-        MY_DATABASE_CONNECTION_STRING: ${{ secrets.MY_DATABASE_CONNECTION_STRING }}
-      run: docker compose build
+      - name: 🐳 Construir contenedores
+        env:
+          ASPNETCORE_ENVIRONMENT: ${{ secrets.ASPNETCORE_ENVIRONMENT }}
+          MY_DATABASE_CONNECTION_STRING: ${{ secrets.MY_DATABASE_CONNECTION_STRING }}
+        run: docker compose build
 
   deploy:
     name: 🚀 Deploy a Render
@@ -50,13 +58,11 @@ jobs:
     needs: [build-and-test, docker-build]
 
     steps:
-    - name: 📥 Checkout del código
-      uses: actions/checkout@v3
+      - name: 📥 Checkout del código
+        uses: actions/checkout@v3
 
-    - name: 📤 Desplegar a Render
-      uses: johnbeynon/render-deploy-action@v0.0.8
-      with:
-        api-key: ${{ secrets.RENDER_API_KEY }}
-        service-id: ${{ secrets.RENDER_SERVICE_ID }}
-        wait-for-success: true
-
+      - name: 📤 Desplegar a Render
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
