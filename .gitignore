@@ -13,7 +13,6 @@ obj/
 *.pdb
 
 # Archivos de configuración sensibles
-AcortadorURL/appsettings.json
 AcortadorURL/appsettings.Development.json
 .env
 

@@ -1,11 +1,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
-# Copia SOLO el proyecto principal y restaura dependencias
 COPY AcortadorURL.csproj ./
 RUN dotnet restore "AcortadorURL.csproj"
 
-# Copia todo lo demás y publica
 COPY . ./
 RUN dotnet publish "AcortadorURL.csproj" -c Release -o out
 
