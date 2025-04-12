@@ -7,7 +7,6 @@ Este proyecto es una aplicación web que permite acortar URLs largas a enlaces m
 ## 🚀 Tecnologías Utilizadas
 
 - [.NET 8](https://dotnet.microsoft.com/)
-- [PostgreSQL 16](https://www.postgresql.org/)
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
@@ -37,9 +36,6 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas:
 1. Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
 
    ```env
-   POSTGRES_USER=admin
-   POSTGRES_PASSWORD=supersecreto
-   POSTGRES_DB=acortador
    ASPNETCORE_ENVIRONMENT=Development
    MY_DATABASE_CONNECTION_STRING=Host=db;Port=5432;Database=acortador;Username=admin;Password=supersecreto
    ```
@@ -64,16 +60,6 @@ Desde la raíz del proyecto, ejecuta los siguientes comandos:
    [http://localhost:8080](http://localhost:8080)
 
 3. La base de datos PostgreSQL estará disponible en el puerto `5432`.
-
----
-
-## 🗄️ Acceso a la base de datos
-
-Para acceder a la base de datos PostgreSQL desde el contenedor, ejecuta:
-
-```bash
-docker exec -it acortador-db psql -U admin -d acortador
-```
 
 ---
 
